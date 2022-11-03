@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.booking.system.constant.ApplicationConstants.STATUS_SUCCESS;
 import static com.booking.system.constant.ApplicationConstants.SUCCESS_CREATE_MESSAGE;
@@ -40,5 +41,12 @@ class SparePartServiceImplTest {
     void fetchInventoryData() {
         Mockito.when(sparePartRepository.findAll()).thenReturn(Arrays.asList(new SparePart("a", "b", 4)));
         Assertions.assertNull(sparePartService.fetchInventoryData());
+    }
+
+
+    @Test
+    void viewSparePart() {
+        Mockito.when(sparePartRepository.findById("ABC")).thenReturn(Optional.of(new SparePart("ABC", "DESC", 5)));
+        Assert.notNull(sparePartService.viewSparePart("ABC"));
     }
 }
