@@ -1,8 +1,10 @@
 package com.booking.system.service;
 
+import com.booking.system.model.request.BookingRequest;
 import com.booking.system.model.request.SparePartBookingRequest;
 import com.booking.system.model.request.SparePartRequest;
 import com.booking.system.model.response.SparePartOperationResponse;
+import com.booking.system.model.response.SparePartResponse;
 import com.booking.system.model.response.SparePartsInventoryResponse;
 
 import java.util.List;
@@ -17,4 +19,9 @@ public interface SparePartService {
     SparePartOperationResponse update(SparePartRequest sparePartRequest);
 
     SparePartOperationResponse bookSparePart(SparePartBookingRequest sparePartBookingRequest);
+
+    SparePartResponse viewSparePart(String sparePartId);
+
+
+    SparePartOperationResponse bookBulkSpareParts(List<SparePartBookingRequest> bookingRequests);
 }

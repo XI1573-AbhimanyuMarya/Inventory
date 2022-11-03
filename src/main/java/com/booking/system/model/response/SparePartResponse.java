@@ -1,4 +1,4 @@
-package com.booking.system.repository.enitty;
+package com.booking.system.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @SuperBuilder
 @Entity
 @Table(name = "SparePart")
-public class SparePart {
+public class SparePartResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "SPARE_PART_ID")
@@ -28,7 +28,7 @@ public class SparePart {
     private Integer stockCount;
 
 
-    public SparePart(String sparePartDescription, Integer stockCount) {
+    public SparePartResponse(String sparePartDescription, Integer stockCount) {
         this.sparePartDescription = sparePartDescription;
         this.stockCount = stockCount;
     }

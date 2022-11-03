@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SparePartRepository extends JpaRepository<SparePart, String> {
+    SparePart findByIdAndStockCountGreaterThan(String sparePartId, int i);
 }

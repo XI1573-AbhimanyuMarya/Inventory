@@ -10,5 +10,5 @@ import lombok.*;
 public class SparePartRequest {
     private String sparePartId;
     private String sparePartDescription;
-    private String stockCount;
+    private Integer stockCount;
 }
