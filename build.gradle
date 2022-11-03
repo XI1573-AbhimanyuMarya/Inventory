@@ -27,7 +27,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// https://mvnrepository.com/artifact/org.postgresql/postgresql
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.2'
-
+	testCompileOnly 'junit:junit:4.12'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
