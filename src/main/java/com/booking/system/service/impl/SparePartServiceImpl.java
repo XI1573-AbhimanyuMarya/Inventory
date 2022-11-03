@@ -1,5 +1,6 @@
 package com.booking.system.service.impl;
 
+import com.booking.system.exceptions.RecordMissingException;
 import com.booking.system.model.request.SparePartBookingRequest;
 import com.booking.system.model.request.SparePartRequest;
 import com.booking.system.model.response.SparePartOperationResponse;
@@ -14,7 +15,6 @@ import com.booking.system.transformer.OrderTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,14 +52,14 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public SparePartOperationResponse removeSparePartFromInventory(String sparePartId) {
-        SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new NotFoundException("Record not Found ."));
+        SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new RecordMissingException("Record not Found ."));
         sparePartRepository.delete(sparePart);
         return new SparePartOperationResponse(STATUS_SUCCESS, SUCCESS_DELETE_MESSAGE);
     }
 
     @Override
     public SparePartOperationResponse update(SparePartRequest sparePartRequest) {
-        SparePart sparePart = sparePartRepository.findById(sparePartRequest.getSparePartId()).orElseThrow(() -> new NotFoundException("Record Not Found."));
+        SparePart sparePart = sparePartRepository.findById(sparePartRequest.getSparePartId()).orElseThrow(() -> new RecordMissingException("Record Not Found."));
         sparePart.setSparePartId(sparePart.getSparePartId());
         sparePart.setSparePartDescription(sparePart.getSparePartDescription());
         sparePart.setStockCount(sparePart.getStockCount());
@@ -77,21 +77,21 @@ public class SparePartServiceImpl implements SparePartService {
             inventoryUpdateService.sparePartBooked(orderedItem.getSparePartId());
             return new SparePartOperationResponse(STATUS_SUCCESS, SUCCESS_ORDER_BOOKED_MESSAGE);
         } else {
-            throw new NotFoundException("Spare Part is Either not available or Not in Stock");
+            throw new RecordMissingException("Spare Part is Either not available or Not in Stock");
         }
 
     }
 
     @Override
     public SparePartResponse viewSparePart(String sparePartId) {
-        SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new NotFoundException("Record Not Found."));
+        SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new RecordMissingException("Record Not Found."));
         return new SparePartResponse(sparePart.getSparePartId(), sparePart.getSparePartDescription(), sparePart.getStockCount());
     }
 
     @Override
     public SparePartOperationResponse bookBulkSpareParts(List<SparePartBookingRequest> bookingRequests) {
         for (SparePartBookingRequest request : bookingRequests) {
-            SparePart sparePart = sparePartRepository.findById(request.getSparePartId()).orElseThrow(() -> new NotFoundException("Record Not Found."));
+            SparePart sparePart = sparePartRepository.findById(request.getSparePartId()).orElseThrow(() -> new RecordMissingException("Record Not Found."));
             Orders orders = orderTransformer.convertToOrder(sparePart, request);
             Orders orderedItem = ordersRepository.saveAndFlush(orders);
             inventoryUpdateService.sparePartBooked(orderedItem.getSparePartId());
