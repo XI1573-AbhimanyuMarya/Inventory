@@ -39,6 +39,7 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public SparePartOperationResponse addSparePart(SparePartRequest sparePartRequest) {
+        log.info("Adding Spare Part in Inventory.");
         SparePart sparePart = sparePartRepository.saveAndFlush(new SparePart(sparePartRequest.getSparePartDescription(), sparePartRequest.getStockCount()));
         inventoryUpdateService.sparePartAdded(sparePart.getSparePartId());
         return new SparePartOperationResponse(STATUS_SUCCESS, SUCCESS_CREATE_MESSAGE);
@@ -46,12 +47,14 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public List<SparePartsInventoryResponse> fetchInventoryData() {
+        log.info("Fetching all Spare Parts available in Inventory.");
         List<SparePart> inventory = sparePartRepository.findAll();
         return inventory.stream().map(a -> new SparePartsInventoryResponse(a.getSparePartId(), a.getSparePartDescription(), a.getStockCount())).collect(Collectors.toList());
     }
 
     @Override
     public SparePartOperationResponse removeSparePartFromInventory(String sparePartId) {
+        log.info("Removing Spare Parts with Id : {} from Inventory.", sparePartId);
         SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new RecordMissingException("Record not Found ."));
         sparePartRepository.delete(sparePart);
         return new SparePartOperationResponse(STATUS_SUCCESS, SUCCESS_DELETE_MESSAGE);
@@ -59,7 +62,8 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public SparePartOperationResponse update(SparePartRequest sparePartRequest) {
-        SparePart sparePart = sparePartRepository.findById(sparePartRequest.getSparePartId()).orElseThrow(() -> new RecordMissingException("Record Not Found."));
+        log.info("Updating Spare Parts details against Id : {} ", sparePartRequest.getSparePartId());
+        SparePart sparePart = sparePartRepository.findById(sparePartRequest.getSparePartId()).orElseThrow(() -> new RecordMissingException("Record not Found against given Spare Part."));
         sparePart.setSparePartId(sparePart.getSparePartId());
         sparePart.setSparePartDescription(sparePart.getSparePartDescription());
         sparePart.setStockCount(sparePart.getStockCount());
@@ -84,12 +88,14 @@ public class SparePartServiceImpl implements SparePartService {
 
     @Override
     public SparePartResponse viewSparePart(String sparePartId) {
+        log.info("Fetching details against Spare Part :{} available in Inventory.", sparePartId);
         SparePart sparePart = sparePartRepository.findById(sparePartId).orElseThrow(() -> new RecordMissingException("Record Not Found."));
         return new SparePartResponse(sparePart.getSparePartId(), sparePart.getSparePartDescription(), sparePart.getStockCount());
     }
 
     @Override
     public SparePartOperationResponse bookBulkSpareParts(List<SparePartBookingRequest> bookingRequests) {
+        log.info("Buk Booking of spare part has been started.");
         for (SparePartBookingRequest request : bookingRequests) {
             SparePart sparePart = sparePartRepository.findById(request.getSparePartId()).orElseThrow(() -> new RecordMissingException("Record Not Found."));
             Orders orders = orderTransformer.convertToOrder(sparePart, request);
